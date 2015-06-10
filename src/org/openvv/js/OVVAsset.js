@@ -189,7 +189,7 @@ function OVV() {
 
         if (getPreviousEvents) {
             for (key in previousEvents[uid]) {
-                if (contains(previousEvents[uid][key].eventName, events)) {
+                if (previousEvents[uid][key] && contains(previousEvents[uid][key].eventName, events)) {
                     runSafely(function () {
                         func(uid, previousEvents[uid][key]);
                     });
@@ -903,19 +903,7 @@ function OVV_OVVID_Asset(uid, dependencies) {
         }
         // Check if any detectable element in the DOM is obscuring more than 50% of the
         // player area.
-		//  - Removed, pending investigation into why Display viewability reports 100% obscured on this test in Configurator preview
-		// -  even though ad is visible on page.
-		//       if (checkDomObscuring(check, player) === true){
-		//	        getDimensions(check, player);
-		//	        if ($ovv.DEBUG) {
-		//               check.domViewabilityState = OVV_OVVID_Check.UNVIEWABLE;
-		//           }else{
-		//               return check;
-		//           }
-		//       }else{
-		//           //player.jsTrace("obscured : " + check.percentObscured.toString());
-		//           //player.jsTrace({OBSCURED:check.percentObscured});
-		//       }
+
 
         // if we're not in a Flash-enabled browser (Display only), or in IE and we're in a cross-domain
         // iframe, return unmeasurable. We are able to measure for same domain iframe ('friendly iframe')
@@ -1012,7 +1000,7 @@ function OVV_OVVID_Asset(uid, dependencies) {
         beaconsStarted++;
 
         if (beaconsReady()) {
-            player.onJsReady();
+            player['onJsReady' + uid]();
         }
     };
 
@@ -1628,8 +1616,8 @@ function OVV_OVVID_Asset(uid, dependencies) {
             createBeacons.bind(this)('BEACON_SWF_URL');
         }
     } else if (player && player.onJsReady) {
-        // since we don't have to wait for beacons to be ready, we're ready now
-        setTimeout( function(){ player.onJsReady() }, 5 ); //Use a tiny timeout to keep this async like the beacons
+		// since we don't have to wait for beacons to be ready, we're ready now
+		setTimeout( function(){ player['onJsReady' + uid]() }, 5 ); //Use a tiny timeout to keep this async like the beacons
     }
 }
 
