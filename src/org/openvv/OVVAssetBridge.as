@@ -43,7 +43,7 @@ package org.openvv {
     [Event(name = "OVVError", type = "org.openvv.events.OVVEvent")]
     /**
      * <p>
-     * OVVAsset is the entry point into OVV. To use OVVV, create an instance of
+     * OVVAssetBridge is the entry point into OVV. To use OVVV, create an instance of
      * this object and pass in the URL of a publicly available OVVBeacon.swf.
      * </p><p>
      * OVV will then attempt to determine the viewability of the SWF it's
@@ -74,7 +74,7 @@ package org.openvv {
      * compare the results of each techniques.
      * </p>
      */
-    public class OVVAsset extends EventDispatcher {
+    public class OVVAssetBridge extends EventDispatcher {
 
         ////////////////////////////////////////////////////////////
         //   CONSTANTS
@@ -102,7 +102,7 @@ package org.openvv {
          * Hold OVV version. Will past to JavaScript as well $ovv.version
          */
 
-        public static const RELEASE_VERSION: String = "1.2.2";
+        public static const RELEASE_VERSION: String = "1.2.3";
 
 
         ////////////////////////////////////////////////////////////
@@ -228,13 +228,13 @@ package org.openvv {
          * If not supplied, the "beacon" method for detecting viewability will
          * be unavailable.
          * vpaidAd - reference to the vpaid object.
-         * @param id The unique identifier of this OVVAsset. If not supplied,
+         * @param id The unique identifier of this OVVAssetBridge. If not supplied,
          * it will be randomly generated.
          * @param adRef A reference to the top DisplayObject of the ad; used
          * to determine full-screen status when player's stage is not available.
          * Optional only for backwards compatibility.
          */
-        public function OVVAsset(conf:Object, id:String = null, adRef:* = null ) {
+        public function OVVAssetBridge(conf:Object, id:String = null, adRef:* = null ) {
             if (!externalInterfaceIsAvailable()) {
                 dispatchEvent(new OVVEvent(OVVEvent.OVVError, {
                     "message": "ExternalInterface unavailable"
