@@ -23,7 +23,7 @@ package org.openvv.events {
      *
      * @see org.openvv.OVVAsset
      */
-    public class OVVEvent extends Event {
+    public class OVVEventN extends Event {
 
         ////////////////////////////////////////////////////////////
         //   CONSTANTS 
@@ -74,7 +74,7 @@ package org.openvv.events {
          * @param cancelable Whether the event can be cancelled or not
          *
          */
-        public function OVVEvent(type: String, data: Object = null, bubbles: Boolean = false, cancelable: Boolean = false) {
+        public function OVVEventN(type: String, data: Object = null, bubbles: Boolean = false, cancelable: Boolean = false) {
             super(type, bubbles, cancelable);
             _data = data;
         }

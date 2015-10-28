@@ -17,19 +17,19 @@
 package org.openvv {
 
     /**
-     * OVVCheck is a container for properties about the current viewability
+     * OVVCheckN is a container for properties about the current viewability
      * state of an OVVAsset. The fps and focus properties are determined by
      * ActionScript, and will be their default values in the Object
      * returned from JavaScript.
      */
-    public class OVVCheck {
+    public class OVVCheckN {
 
         ////////////////////////////////////////////////////////////
         //   CONSTANTS 
         ////////////////////////////////////////////////////////////
 
         /**
-         * When OVVCheck.technique is set to BEACON, the beacon technique
+         * When OVVCheckN.technique is set to BEACON, the beacon technique
          * was used to determine the viewabilityState
          */
         public static const BEACON: String = "beacon";
@@ -44,16 +44,16 @@ package org.openvv {
         public static const FULLSCREEN:String = "fullscreen"
 
         /**
-         * When OVVCheck.technique is set to GEOMETRY, the geometry technique
+         * When OVVCheckN.technique is set to GEOMETRY, the geometry technique
          * was used to determine the viewabilityState
          */
         public static const GEOMETRY: String = "geometry";
 
         /**
-         * OVVCheck.technique is set to CSS_VISIBILITY when a property value of
+         * OVVCheckN.technique is set to CSS_VISIBILITY when a property value of
          * 'visibility:hidden' or 'display:none' on the player's embed object,
          * or on any containing element in the same javascript domain (page or iframe)
-         * is used to determine that viewability state is OVVCheck.UNVIEWABLE
+         * is used to determine that viewability state is OVVCheckN.UNVIEWABLE
          */
         public static const CSS_VISIBILITY: String = "css_visibility";
 
@@ -73,7 +73,7 @@ package org.openvv {
         public static const VIEWABLE: String = 'viewable';
 
         /**
-         * The value that {@link OVVCheck#viewabilityState} will be set to if the beacons
+         * The value that {@link OVVCheckNN#viewabilityState} will be set to if the beacons
          * are not ready to determine the viewability state
          */
         public static const NOT_READY: String = "not_ready";
@@ -217,10 +217,10 @@ package org.openvv {
          * Constructor. Takes in an Object created by JavaScript and assigns
          * its field to this object.
          *
-         * @param jsCheck The OVVCheck object created by JavaScript
+         * @param jsCheck The OVVCheckN object created by JavaScript
          *
          */
-        public function OVVCheck(jsCheck: Object) {
+        public function OVVCheckN(jsCheck: Object) {
             for (var field: String in jsCheck) {
                 if (this.hasOwnProperty(field)) {
                     this[field] = jsCheck[field];

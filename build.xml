@@ -69,7 +69,7 @@
 	 	<replace file="${tmp.dir}/org/openvv/OVVAssetBridge.as" token="{{OVVAssetJS}}" value="${js-src-esc}" />
 	 	<!-- Time to compile! -->
 		<compc output="${bin.dir}/openvv.swc"
-			   include-classes="org.openvv.OVVAssetBridge org.openvv.OVVCheck org.openvv.OVVRenderMeter org.openvv.OVVThrottleType org.openvv.events.OVVEvent net.iab.IVPAID net.iab.VPAIDEvent org.openvv.OVVVersion">
+			   include-classes="org.openvv.OVVAssetBridge org.openvv.OVVCheckN org.openvv.OVVRenderMeter org.openvv.OVVThrottleType org.openvv.events.OVVEventN net.iab.IVPAID net.iab.VPAIDEvent org.openvv.OVVVersion">
 			<source-path path-element="${tmp.dir}"/>
 		</compc>
 		<!-- Remove the temp dir -->

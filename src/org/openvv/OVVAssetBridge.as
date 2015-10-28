@@ -26,21 +26,21 @@ package org.openvv {
     import flash.events.TimerEvent;
     import flash.external.ExternalInterface;
     import flash.utils.Timer;
-    import org.openvv.events.OVVEvent;
+    import org.openvv.events.OVVEventN;
     import net.iab.VPAIDEvent;
 
     /**
      * The event dispatched when the asset has been viewable for 5 contiguous seconds
      */
-    [Event(name = "OVVImpression", type = "org.openvv.events.OVVEvent")]
+    [Event(name = "OVVImpression", type = "org.openvv.events.OVVEventN")]
     /**
      * The Event dispatched when OVV emits information messages
      */
-    [Event(name = "OVVLog", type = "org.openvv.events.OVVEvent")]
+    [Event(name = "OVVLog", type = "org.openvv.events.OVVEventN")]
     /**
      * The event dispatched when OVV encounters an error
      */
-    [Event(name = "OVVError", type = "org.openvv.events.OVVEvent")]
+    [Event(name = "OVVError", type = "org.openvv.events.OVVEventN")]
     /**
      * <p>
      * OVVAssetBridge is the entry point into OVV. To use OVVV, create an instance of
@@ -54,7 +54,7 @@ package org.openvv {
      * The "geometry technique" uses JavaScript APIs such as
      * document.body.clientWidth/Height and getClientRects() to determine
      * how much of the SWF is within the viewport of the browser. It then sets
-     * OVVCheck.viewabilityState to OVVCheck.VIEWABLE or OVVCheck.UNVIEWABLE.
+     * OVVCheckN.viewabilityState to OVVCheckN.VIEWABLE or OVVCheckN.UNVIEWABLE.
      * </li>
      * <li>
      * When the asset determines that it is being viewed within an iframe,
@@ -62,15 +62,15 @@ package org.openvv {
      * beacon SWFs on top of the asset and leverages the ThrottleEvent
      * introduced in FlashPlayer 11 to determine whether each beacon is within
      * the browser's viewport. If the Flash Player or the browser being used
-     * don't support ThrottleEvent, OVVCheck.viewabilityState will be set to
-     * OVVCheck.UNMEASURABLE.
+     * don't support ThrottleEvent, OVVCheckN.viewabilityState will be set to
+     * OVVCheckN.UNMEASURABLE.
      * </li>
      * </ol>
      * <p>
      * When OVV.DEBUG (in JavaScript) is set to true, OVV will enlarge and
      * display the beacons on the page and use both techniques. OVV will then
-     * also populate the OVVCheck.beaconViewabilityState and
-     * OVVCheck.geometryViewabilityState properties so that the end user can
+     * also populate the OVVCheckN.beaconViewabilityState and
+     * OVVCheckN.geometryViewabilityState properties so that the end user can
      * compare the results of each techniques.
      * </p>
      */
@@ -187,8 +187,8 @@ package org.openvv {
 		/**
 		 * A vector of all OVV events
 		 */
-		private static const OVV_EVENTS:Array = ([OVVEvent.OVVError,OVVEvent.OVVLog, OVVEvent.OVVImpression,
-			OVVEvent.OVVImpressionUnmeasurable, OVVEvent.OVVReady]);
+		private static const OVV_EVENTS:Array = ([OVVEventN.OVVError,OVVEventN.OVVLog, OVVEventN.OVVImpression,
+			OVVEventN.OVVImpressionUnmeasurable, OVVEventN.OVVReady]);
 
 		private var _vpaidEventsDispatcher:IEventDispatcher = null;
 		/**
@@ -236,7 +236,7 @@ package org.openvv {
          */
         public function OVVAssetBridge(conf:Object, id:String = null, adRef:* = null ) {
             if (!externalInterfaceIsAvailable()) {
-                dispatchEvent(new OVVEvent(OVVEvent.OVVError, {
+                dispatchEvent(new OVVEventN(OVVEventN.OVVError, {
                     "message": "ExternalInterface unavailable"
                 }));
                 return;
@@ -299,7 +299,6 @@ package org.openvv {
             } catch (e: SecurityError) {
                 // ignore
             }
-
             return isEIAvailable;
         }
 
@@ -336,44 +335,43 @@ package org.openvv {
         ////////////////////////////////////////////////////////////
 
         /**
-         * Returns an OVVCheck object which contains information about the
+         * Returns an OVVCheckN object which contains information about the
          * current viewability state of the asset.
          *
-         * @return OVVCheck An object containing all the properties OVV was
+         * @return OVVCheckN An object containing all the properties OVV was
          * able to gather from the container
          *
-         * @see org.openvv.OVVCheck
+         * @see org.openvv.OVVCheckN
          */
-        public function checkViewability(): OVVCheck {
+        public function checkViewability(): OVVCheckN {
             if (!externalInterfaceIsAvailable()) {
-                return new OVVCheck({
+                return new OVVCheckN({
                     "error": "ExternalInterface unavailable"
                 });
             }
 
             var jsResults: Object = ExternalInterface.call("$ovv.getAssetById('" + _id + "')" + ".checkViewability");
-            var results: OVVCheck = new OVVCheck(jsResults);
+            var results: OVVCheckN = new OVVCheckN(jsResults);
 
-            if (results && !!results.error)
+            if (results && !!results.error) {
                 raiseError(results);
-
-            if (_vpaidAd != null && _vpaidAd.hasOwnProperty('adVolume')) {
-
-                results.volume = _vpaidAd['adVolume'];
             }
 
+            if (_vpaidAd != null && _vpaidAd.hasOwnProperty('adVolume')) {
+                results.volume = _vpaidAd['adVolume'];
+            }
             var displayState:String = getDisplayState(results);
+
             // StageDisplayState.FULL_SCREEN_INTERACTIVE is available >= Flash Player 11.3
             if (displayState == StageDisplayState.FULL_SCREEN || displayState == 'fullScreenInteractive') {
                 results.displayState = displayState;
-                results.viewabilityState = OVVCheck.VIEWABLE;
-                results.viewabilityStateOverrideReason = OVVCheck.FULLSCREEN;
+                results.viewabilityState = OVVCheckN.VIEWABLE;
+                results.viewabilityStateOverrideReason = OVVCheckN.FULLSCREEN;
 
-                if (results.technique == OVVCheck.GEOMETRY) {
+                if (results.technique == OVVCheckN.GEOMETRY) {
                     results.percentViewable = 100;
                 }
             }
-
             return results;
         }
 
@@ -416,7 +414,6 @@ package org.openvv {
          * this function is called so that the ad can wait for the beacons to load before dispatching AdLoaded
          */
         public function onJsReady(): void {
-            trace("JS READY!")
             jsReady = true;
             if ( adStarted ) {
                 startImpressionTimer();
@@ -465,7 +462,7 @@ package org.openvv {
                 _ad.addEventListener(Event.ADDED_TO_STAGE, setStage);
         }
 
-        private function getDisplayState(results:OVVCheck):String
+        private function getDisplayState(results:OVVCheckN):String
         {
             var hasStageAccess:Boolean;
             var displayState:String = StageDisplayState.NORMAL;
@@ -507,11 +504,11 @@ package org.openvv {
 			raiseLog(results);
 
             if (_isPaused == false) {
-                _intervalsUnMeasurable = (results.viewabilityState == OVVCheck.UNMEASURABLE)
+                _intervalsUnMeasurable = (results.viewabilityState == OVVCheckN.UNMEASURABLE)
                                             ? _intervalsUnMeasurable + 1 : 0;
-                _intervalsInView = (results.viewabilityState == OVVCheck.VIEWABLE &&
+                _intervalsInView = (results.viewabilityState == OVVCheckN.VIEWABLE &&
                                     ( results.focus == true ||
-                                        results.viewabilityStateOverrideReason == OVVCheck.FULLSCREEN) )
+                                        results.viewabilityStateOverrideReason == OVVCheckN.FULLSCREEN) )
                                     ? _intervalsInView + 1 : 0;
 
                 if (_impressionEventRaised == false && _intervalsInView >= VIEWABLE_IMPRESSION_THRESHOLD) {
@@ -617,7 +614,7 @@ package org.openvv {
 		 * Handle an OVV event by publishing it to JavaScript
 		 * @param	event the OVV event to handle
 		 */
-		private function handleOVVEvent(event:OVVEvent):void
+		private function handleOVVEvent(event:OVVEventN):void
 		{
 			publishToJavascript(event.type, null, event.data);
 		}
@@ -630,8 +627,7 @@ package org.openvv {
 		 */
 		public function handleVpaidEvent(event:Event):void
 		{
-			var ovvData:OVVCheck = checkViewability();
-
+			var ovvData:OVVCheckN = checkViewability();
 			switch(event.type){
 				case VPAIDEvent.AdVideoComplete:
 					// stop time on ad completion
@@ -696,28 +692,28 @@ package org.openvv {
 		}
 		private function raiseReady():void
 		{
-			dispatchEvent(new OVVEvent(OVVEvent.OVVReady, null));
+			dispatchEvent(new OVVEventN(OVVEventN.OVVReady, null));
 		}
 		private function raiseImpression(ovvData:*):void
 		{
-			dispatchEvent(new OVVEvent(OVVEvent.OVVImpression, ovvData));
+			dispatchEvent(new OVVEventN(OVVEventN.OVVImpression, ovvData));
 			_impressionEventRaised = true;
 		}
 
 		private function raiseImpressionUnmeasurable(ovvData:*):void
 		{
-			dispatchEvent(new OVVEvent(OVVEvent.OVVImpressionUnmeasurable, ovvData));
+			dispatchEvent(new OVVEventN(OVVEventN.OVVImpressionUnmeasurable, ovvData));
 			_impressionUnmeasurableEventRaised = true;
 		}
 
 		private function raiseLog(ovvData:*):void
 		{
-			dispatchEvent(new OVVEvent(OVVEvent.OVVLog, ovvData));
+			dispatchEvent(new OVVEventN(OVVEventN.OVVLog, ovvData));
 		}
 
 		private function raiseError(ovvData:*):void
 		{
-			dispatchEvent(new OVVEvent(OVVEvent.OVVError, ovvData));
+			dispatchEvent(new OVVEventN(OVVEventN.OVVError, ovvData));
 		}
     }
 }
